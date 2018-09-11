@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="/electronapplicationtests/styles.css">
+  </head>
+  <body>
+    <div class = 'card-header'>
+      <h1 id = 'header'>Shopping List</h1>
+    </div>
+    <div>
+    <ul class = 'list-group'>
+
+    </ul>
+  </div>
+<script>
+const electron = require('electron');
+const {ipcRenderer} = electron;
+const ul = document.querySelector('ul')
+//add item to list
+ipcRenderer.on('item:add', function(e, item){
+  const li = document.createElement('li');
+  const space = document.createTextNode(' ');
+  const itemText = document.createTextNode(item[0]);
+  const itemDate = document.createTextNode(item[1]);
+  li.className = 'list-group-item'
+  li.appendChild(itemText);
+  li.appendChild(space);
+  li.appendChild(itemDate);
+  ul.appendChild(li);
+});
+// Clear all
+ipcRenderer.on('date:clear', function(){
+  ul.innerHTML = '';
+  ul.className = '';
+});
+ul.addEventListener('dblclick', removeItem);
+
+function removeItem(e){
+  e.target.remove();
+  if(ul.children.length === 0){
+    ul.className = '';
+  }
+}
+</script>
+  </body>
+</html>
