@@ -1,3 +1,5 @@
+const electron = require('electron');
+const {ipcRenderer} = electron;
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyCtrQNUMVEtLrpMZn4FkCLSrySE2cVu2Qs",
@@ -30,6 +32,7 @@ signInButton.addEventListener('click',function(){
   let passwordField = document.querySelector('#pw').value;
   firebase.auth().signInWithEmailAndPassword(emailField, passwordField).then(function(){
     document.location.href = 'index.html';
+
   }).catch(function(error){
     if(error != null){
       console.log(error.message);
@@ -37,3 +40,32 @@ signInButton.addEventListener('click',function(){
     }
   })
 });
+function createAddWindow(){
+  //create a new window
+  addWindow = new BrowserWindow({
+    width: 300,
+    height: 200,
+    title: 'Add Shopping List Item'
+  });
+signInButton.addEventListener('click', function(){
+  const userFunctions = [
+    {
+      label: 'Add',
+      submenu:[
+        {
+          label:'Add Item',
+          click(){
+          createAddWindow();
+          }
+        }
+        {
+          label:'Clear Items',
+          click(){
+              mainWindow.webContents.send('item:clear');
+              mainWindow.webContents.send('date:clear');
+          }
+        }
+      ]
+  }];
+  ipcRenderer.send('login:func', userFunctions);
+})

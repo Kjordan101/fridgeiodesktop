@@ -2,6 +2,8 @@ const electron = require('electron');
 const path = require('path');
 const url = require('url');
 const firebase = require('firebase');
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const update = require('update-electron-app');
 const {app, BrowserWindow,Menu, ipcMain} = require('electron');
 
@@ -30,12 +32,6 @@ app.on('ready', function(){
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   //insert Menu
   Menu.setApplicationMenu(mainMenu);
-});
-app.functions.auth.user().onCreate('login', function(){
-  //create menus for users after they login
-  console.log('work')
-  const loginMenus = Menu.buildFromTemplate(userFunctions);
-  Menu.setApplicationMenu(loginMenus);
 });
 //create New Windows
 
@@ -69,47 +65,35 @@ ipcMain.on('item:add', function(e,item){
 ipcMain.on('date:add', function(e,date){
   mainWindow.webContents.send('date:add', date);
 });
+ipcMain.on('login:func', function(e,userFunctions){
+  const UF = Menu.buildFromTemplate(userFunctions);
+  Menu.setApplicationMenu(UF);
+});
 //Create menu template
-const userFunctions = [
-  {
-    label: 'Add',
-    submenu:[
-      {
-        label:'Add Item',
-        click(){
-        createAddWindow();
-        }
-      }
-      // {
-      //   label:'Clear Items',
-      //   click(){
-      //       mainWindow.webContents.send('item:clear');
-      //       mainWindow.webContents.send('date:clear');
-      //   }
-      // }
-    ]
-}];
+// const userFunctions = [
+//   {
+//     label: 'Add',
+//     submenu:[
+//       {
+//         label:'Add Item',
+//         click(){
+//         createAddWindow();
+//         }
+//       }
+//       // {
+//       //   label:'Clear Items',
+//       //   click(){
+//       //       mainWindow.webContents.send('item:clear');
+//       //       mainWindow.webContents.send('date:clear');
+//       //   }
+//       // }
+//     ]
+// }];
 
 const mainMenuTemplate = [
-
   {
   label: 'File',
   submenu:[
-  //   {
-  //   {
-  //   label: 'Add Item',
-  //   click(){
-  //     createAddWindow();
-  //   }
-  // }
-  // },
-  // {
-  //   label: 'Clear Items',
-  //   click(){
-  //     mainWindow.webContents.send('item:clear');
-  //     mainWindow.webContents.send('date:clear');
-  //   }
-  // },
   {
     label: 'Quit',
     accelerator: process.platform === 'darwin' ? 'command+Q':
