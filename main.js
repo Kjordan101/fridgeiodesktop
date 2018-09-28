@@ -4,6 +4,7 @@ const url = require('url');
 const firebase = require('firebase');
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+//const config = require('firebase-config');
 const update = require('update-electron-app');
 const {app, BrowserWindow,Menu, ipcMain} = require('electron');
 
@@ -31,7 +32,7 @@ app.on('ready', function(){
   //Build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   //insert Menu
-  Menu.setApplicationMenu(mainMenu);
+ Menu.setApplicationMenu(mainMenu);
 });
 //create New Windows
 
@@ -65,30 +66,9 @@ ipcMain.on('item:add', function(e,item){
 ipcMain.on('date:add', function(e,date){
   mainWindow.webContents.send('date:add', date);
 });
-ipcMain.on('login:func', function(e,userFunctions){
-  const UF = Menu.buildFromTemplate(userFunctions);
-  Menu.setApplicationMenu(UF);
+ipcMain.on('loginfuncOne', function(e,userFunctions){
+  Menu.setApplicationMenu(userFunctions);
 });
-//Create menu template
-// const userFunctions = [
-//   {
-//     label: 'Add',
-//     submenu:[
-//       {
-//         label:'Add Item',
-//         click(){
-//         createAddWindow();
-//         }
-//       }
-//       // {
-//       //   label:'Clear Items',
-//       //   click(){
-//       //       mainWindow.webContents.send('item:clear');
-//       //       mainWindow.webContents.send('date:clear');
-//       //   }
-//       // }
-//     ]
-// }];
 
 const mainMenuTemplate = [
   {

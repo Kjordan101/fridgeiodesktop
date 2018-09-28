@@ -1,5 +1,7 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
+const {getCurrentWindow, app, BrowserWindow, Menu} = require('electron').remote;
+let addWindow;
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyCtrQNUMVEtLrpMZn4FkCLSrySE2cVu2Qs",
@@ -46,9 +48,40 @@ function createAddWindow(){
     width: 300,
     height: 200,
     title: 'Add Shopping List Item'
-  });
+});
+addWindow.loadURL(url.format({
+  pathname: path.join(__dirname,'addWindow.html'),
+  protocol:'file',
+  slashes: true
+}));
+addWindow.on('close',function(e){
+  addWindow = null;
+});
+}
 signInButton.addEventListener('click', function(){
-  const userFunctions = [
+  const mainMenuTemplate = [
+    {
+    label: 'File',
+    submenu:[
+    {
+      label: 'Quit',
+      accelerator: process.platform === 'darwin' ? 'Cmd+Q':
+      'Ctrl+Q',
+      click(){
+        app.quit();
+      }
+    },
+    {
+    label: 'Reload',
+    accelerator: process.platform === 'darwin' ? 'Cmd+R':
+    'Ctrl+R',
+    click(){
+      getCurrentWindow().reload()
+    }
+    }
+      ]
+    }];
+  const userPower = [
     {
       label: 'Add',
       submenu:[
@@ -57,7 +90,7 @@ signInButton.addEventListener('click', function(){
           click(){
           createAddWindow();
           }
-        }
+        },
         {
           label:'Clear Items',
           click(){
@@ -67,5 +100,9 @@ signInButton.addEventListener('click', function(){
         }
       ]
   }];
-  ipcRenderer.send('login:func', userFunctions);
+  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+  const userFunctions = Menu.buildFromTemplate(userPower);
+  //let userOptions= [mainMenu, userFunctions];
+  ipcRenderer.send('loginFuncTwo', mainMenu);
+  ipcRenderer.send('loginFuncOne', userFunctions);
 })
