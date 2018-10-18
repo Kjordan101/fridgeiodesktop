@@ -9,7 +9,7 @@
   </head>
   <body>
     <div class = 'card-header'>
-      <h1 id = 'header'>Shopping List</h1>
+      <h1 id = 'header'></h1>
     </div>
     <div>
     <ul class = 'list-group'>
@@ -19,19 +19,29 @@
 <script>
 const electron = require('electron');
 const {ipcRenderer} = electron;
+const {ipcMain, app, BrowserWindow} = require('electron')
 const ul = document.querySelector('ul')
 //add item to list
 ipcRenderer.on('item:add', function(e, item){
   const li = document.createElement('li');
+  const title = document.querySelector('#header')
   const space = document.createTextNode(' ');
+  const listTitle = document.createTextNode(item[2]);
   const itemText = document.createTextNode(item[0]);
   const itemDate = document.createTextNode(item[1]);
+  title.appendChild(listTitle);
   li.className = 'list-group-item'
   li.appendChild(itemText);
   li.appendChild(space);
   li.appendChild(itemDate);
   ul.appendChild(li);
+  if(listTitle.value == null){
+    document.querySelector('#header').innerHTML = "Shopping List"
+  }else if(title.value != null){
+    alert('Title Can Not Be Changed!')
+  }
 });
+
 // Clear all
 ipcRenderer.on('date:clear', function(){
   ul.innerHTML = '';

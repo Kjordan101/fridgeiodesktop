@@ -61,14 +61,21 @@ function createAddWindow(){
 //catch item:add
 ipcMain.on('item:add', function(e,item){
   mainWindow.webContents.send('item:add', item);
-  addWindow.close()
 });
 ipcMain.on('date:add', function(e,date){
   mainWindow.webContents.send('date:add', date);
 });
-ipcMain.on('loginfuncOne', function(e,userFunctions){
-  Menu.setApplicationMenu(userFunctions);
-});
+// ipcMain.on('title:add', function(e,header){
+//   mainWindow.webContents.send('title:add', header)
+//   addWindow.close()
+//
+// });
+// ipcMain.on('loginFuncTwo', function(e,mainMenu){
+//   mainWindow.webContents.send('loginFuncTwo',mainMenu);
+// });
+// ipcMain.on('loginfuncOne', function(e,userFunctions){
+//   mainWindow.webContents.send('loginfuncOne',userFunctions);
+// });
 
 const mainMenuTemplate = [
   {

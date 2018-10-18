@@ -1,6 +1,10 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
-const {getCurrentWindow, app, BrowserWindow, Menu} = require('electron').remote;
+const path = require('path');
+const url = require('url');
+const firebase = require('firebase');
+const {getCurrentWindow, app, BrowserWindow, Menu, ipcMain} = require('electron').remote;
+
 let addWindow;
 // Initialize Firebase
 var config = {
@@ -33,7 +37,7 @@ signInButton.addEventListener('click',function(){
   let emailField = document.querySelector('#email').value;
   let passwordField = document.querySelector('#pw').value;
   firebase.auth().signInWithEmailAndPassword(emailField, passwordField).then(function(){
-    document.location.href = 'index.html';
+    document.location.href = 'createandload.html';
 
   }).catch(function(error){
     if(error != null){
@@ -42,67 +46,64 @@ signInButton.addEventListener('click',function(){
     }
   })
 });
-function createAddWindow(){
-  //create a new window
-  addWindow = new BrowserWindow({
-    width: 300,
-    height: 200,
-    title: 'Add Shopping List Item'
-});
-addWindow.loadURL(url.format({
-  pathname: path.join(__dirname,'addWindow.html'),
-  protocol:'file',
-  slashes: true
-}));
-addWindow.on('close',function(e){
-  addWindow = null;
-});
-}
-signInButton.addEventListener('click', function(){
-  const mainMenuTemplate = [
-    {
-    label: 'File',
-    submenu:[
-    {
-      label: 'Quit',
-      accelerator: process.platform === 'darwin' ? 'Cmd+Q':
-      'Ctrl+Q',
-      click(){
-        app.quit();
-      }
-    },
-    {
-    label: 'Reload',
-    accelerator: process.platform === 'darwin' ? 'Cmd+R':
-    'Ctrl+R',
-    click(){
-      getCurrentWindow().reload()
-    }
-    }
-      ]
-    }];
-  const userPower = [
-    {
-      label: 'Add',
-      submenu:[
-        {
-          label:'Add Item',
-          click(){
-          createAddWindow();
-          }
-        },
-        {
-          label:'Clear Items',
-          click(){
-              mainWindow.webContents.send('item:clear');
-              mainWindow.webContents.send('date:clear');
-          }
-        }
-      ]
-  }];
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  const userFunctions = Menu.buildFromTemplate(userPower);
-  //let userOptions= [mainMenu, userFunctions];
-  ipcRenderer.send('loginFuncTwo', mainMenu);
-  ipcRenderer.send('loginFuncOne', userFunctions);
-})
+
+// function createAddWindow(){
+//   //create a new window
+//   addWindow = new BrowserWindow({
+//     width: 300,
+//     height: 200,
+//     title: 'Add Shopping List Item'
+// });
+// addWindow.loadURL(url.format({
+//   pathname: path.join(__dirname,'addWindow.html'),
+//   protocol:'file',
+//   slashes: true
+// }));
+// addWindow.on('close',function(e){
+//   addWindow = null;
+// });
+// }
+// signInButton.addEventListener('click', function(){
+//   const userPower = [
+//     {
+//       label: 'Add',
+//       submenu:[
+//         {
+//           label:'Add Item',
+//           click(){
+//           createAddWindow();
+//           }
+//         },
+//         {
+//           label:'Clear Items',
+//           click(){
+//               mainWindow.webContents.send('item:clear');
+//               mainWindow.webContents.send('date:clear');
+//           }
+//         }
+//       ]
+//   }];
+//   const userFunctions = Menu.buildFromTemplate(userPower);
+//   Menu.setApplicationMenu(userFunctions);
+//
+//   // ipcRenderer.send('loginFuncOne', userFunctions);
+//   // ipcRenderer.send('loginFuncTwo', mainMenu);
+// })
+// signInButton.addEventListener('click', function(){
+//   const mainMenuTemp = [
+//     {
+//     label: 'File',
+//     submenu:[
+//     {
+//       label: 'Quit',
+//       accelerator: process.platform === 'darwin' ? 'Cmd+Q':
+//       'Ctrl+Q',
+//       click(){
+//         app.quit();
+//       }
+//     },
+//       ]
+//     }];
+//     const mainMenu = Menu.buildFromTemplate(mainMenuTemp);
+//     Menu.setApplicationMenu(mainMenu);
+// })
